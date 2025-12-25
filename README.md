@@ -29,7 +29,7 @@ CSS
 
 Git and GitHub
 
-🔹 Project Structure
+Project Structure
 fake-news-generator/
 │
 ├── app.py
@@ -51,7 +51,7 @@ Step 3: Install Flask
 pip install flask
 
 Step 4: Run the Application
-python app.py
+python fake_headline_generator.py
 
 Step 5: Open in Browser
 http://127.0.0.1:5000/
