@@ -382,14 +382,13 @@ def logout():
     return redirect(url_for("login"))
 
 if __name__ == "__main__":
-<<<<<<< HEAD
+
     import os
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-=======
+
     init_db()
     port = int(os.environ.get("PORT", 5000))
     print(f"\n🚀 Starting app on port {port}")
     print(f"🤖 AI Available: {AI_AVAILABLE}\n")
     app.run(host="0.0.0.0", port=port, debug=False)
->>>>>>> e0703e8 (updated project files)
