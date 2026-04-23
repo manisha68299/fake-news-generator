@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Headline Architect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <h1 class="logo">📰 Headline Architect</h1>
+                {% if ai_available %}
+                <span class="ai-badge">✨ AI Powered</span>
+                {% endif %}
+            </div>
+            <div class="navbar-right">
+                <a href="{{ url_for('favorites') }}" class="nav-link">❤️ Favorites</a>
+                <a href="{{ url_for('trending') }}" class="nav-link">🔥 Trending</a>
+                <span class="user-email">👤 {{ session['user'] }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <!-- WELCOME -->
+            <div class="welcome-section">
+                <h2>Generate Satirical Headlines ✨</h2>
+                <p>Choose a category, select tone, and let AI create hilarious fake news</p>
+            </div>
+
+            <!-- CATEGORY SELECTOR -->
+            <div class="section">
+                <h3>📂 Select Category</h3>
+                <div class="categories-grid">
+                    <form id="categoryForm" method="POST" style="display: none;">
+                        <input type="hidden" id="hiddenCategory" name="category" value="ai_tech">
+                        <input type="hidden" id="hiddenCount" name="count" value="1">
+                        <input type="hidden" id="hiddenTone" name="tone" value="funny">
+                    </form>
+
+                    <div class="category-card" onclick="selectCategory('ai_tech')" data-category="ai_tech">
+                        <div class="category-icon">🧠</div>
+                        <div class="category-name">AI & Tech</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('world')" data-category="world">
+                        <div class="category-icon">🌍</div>
+                        <div class="category-name">World News</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('politics')" data-category="politics">
+                        <div class="category-icon">🏛</div>
+                        <div class="category-name">Politics</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('sports')" data-category="sports">
+                        <div class="category-icon">⚽</div>
+                        <div class="category-name">Sports</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('entertainment')" data-category="entertainment">
+                        <div class="category-icon">🎬</div>
+                        <div class="category-name">Entertainment</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('business')" data-category="business">
+                        <div class="category-icon">💰</div>
+                        <div class="category-name">Business</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('lifestyle')" data-category="lifestyle">
+                        <div class="category-icon">🍔</div>
+                        <div class="category-name">Lifestyle</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('weird')" data-category="weird">
+                        <div class="category-icon">🤯</div>
+                        <div class="category-name">Weird & Absurd</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('space')" data-category="space">
+                        <div class="category-icon">🚀</div>
+                        <div class="category-name">Space & Cosmic</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('social_media')" data-category="social_media">
+                        <div class="category-icon">📱</div>
+                        <div class="category-name">Social Media</div>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('startup')" data-category="startup">
+                        <div class="category-icon">🚀</div>
+                        <div class="category-name">Startups</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GENERATION CONTROLS -->
+            <div class="section controls-section">
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label>💬 Tone:</label>
+                        <select id="toneSelect">
+                            <option value="funny">😂 Funny</option>
+                            <option value="serious">🤨 Serious</option>
+                            <option value="absurd">🤪 Absurd</option>
+                            <option value="dramatic">😱 Dramatic</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>📊 Generate:</label>
+                        <select id="countSelect">
+                            <option value="1" selected>1 Headline</option>
+                            <option value="2">2 Headlines</option>
+                            <option value="3">3 Headlines</option>
+                            <option value="5">5 Headlines</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-generate" onclick="generateHeadlines()">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Generate Headlines</span>
+                </button>
+            </div>
+
+            <!-- GENERATED HEADLINES -->
+            {% if headlines %}
+            <div class="section headlines-section">
+                <h3>🎉 Fresh Headlines</h3>
+                <div class="headlines-container">
+                    {% for headline in headlines %}
+                    <div class="headline-card fade-in-up">
+                        <div class="headline-top">
+                            <span class="category-tag">{{ category.upper() }}</span>
+                        </div>
+                        <p class="headline-text">{{ headline }}</p>
+                        <div class="headline-actions">
+                            <button onclick="copyHeadline('{{ headline }}')" class="btn-action">
+                                <span>📋</span> Copy
+                            </button>
+                            <button onclick="shareHeadline('{{ headline }}')" class="btn-action">
+                                <span>📤</span> Share
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- HISTORY -->
+            {% if user_headlines %}
+            <div class="section history-section">
+                <div class="section-header">
+                    <h3>📚 Recent Headlines ({{ user_headlines|length }})</h3>
+                </div>
+                <div class="history-list">
+                    {% for hl in user_headlines %}
+                    <div class="history-item">
+                        <div class="history-left">
+                            <span class="history-category">{{ hl['category'] }}</span>
+                            <p>{{ hl['headline'] }}</p>
+                        </div>
+                        <div class="history-right">
+                            <button class="btn-icon-only" onclick="copyHeadline('{{ hl['headline'] }}')">📋</button>
+                            <button class="btn-icon-only favorite-btn" onclick="toggleFavorite({{ hl['id'] }})">
+                                {% if hl['is_favorite'] %}❤️{% else %}🤍{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        let selectedCategory = "ai_tech";
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${cat}"]`).classList.add('active');
+        }
+
+        function generateHeadlines() {
+            document.getElementById('hiddenCategory').value = selectedCategory;
+            document.getElementById('hiddenCount').value = document.getElementById('countSelect').value;
+            document.getElementById('hiddenTone').value = document.getElementById('toneSelect').value;
+            document.getElementById('categoryForm').submit();
+        }
+
+        function copyHeadline(text) {
+            navigator.clipboard.writeText(text);
+            showToast('✅ Copied to clipboard!');
+        }
+
+        function shareHeadline(text) {
+            if (navigator.share) {
+                navigator.share({ title: "Fake News", text: text });
+            } else {
+                copyHeadline(text);
+            }
+        }
+
+        function toggleFavorite(id) {
+            fetch(`/api/toggle-favorite/${id}`, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Auto-select first category
+        document.querySelector('[data-category="ai_tech"]').classList.add('active');
+    </script>
+</body>
+</html>

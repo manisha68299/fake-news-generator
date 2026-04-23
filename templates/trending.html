@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending - Headline Architect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <h1 class="logo">🔥 Trending Headlines</h1>
+            </div>
+            <div class="navbar-right">
+                <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            {% if trending %}
+            <div class="section">
+                <div class="trending-list">
+                    {% for item in trending %}
+                    <div class="trending-item">
+                        <div class="trending-rank">{{ loop.index }}</div>
+                        <div class="trending-content">
+                            <span class="trending-category">{{ item['category'] }}</span>
+                            <p>{{ item['headline'] }}</p>
+                            <small>👁️ {{ item[2] }} views</small>
+                        </div>
+                        <button onclick="copyHeadline('{{ item[0] }}')" class="btn-icon-only">📋</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="section empty-state">
+                <h3>No trends yet 📊</h3>
+                <p>Generate some headlines first!</p>
+                <a href="{{ url_for('home') }}" class="btn-generate">← Back to Home</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function copyHeadline(text) {
+            navigator.clipboard.writeText(text);
+            alert('Copied!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites - Headline Architect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <h1 class="logo">❤️ Your Favorites</h1>
+            </div>
+            <div class="navbar-right">
+                <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            {% if favorites %}
+            <div class="section history-section">
+                <div class="history-list">
+                    {% for fav in favorites %}
+                    <div class="history-item">
+                        <div class="history-left">
+                            <span class="history-category">{{ fav['category'] }}</span>
+                            <p>{{ fav['headline'] }}</p>
+                        </div>
+                        <button class="btn-icon-only" onclick="copyHeadline('{{ fav['headline'] }}')">📋</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="section empty-state">
+                <h3>No favorites yet 😢</h3>
+                <p>Go back and add some headlines to favorites!</p>
+                <a href="{{ url_for('home') }}" class="btn-generate">← Back to Home</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function copyHeadline(text) {
+            navigator.clipboard.writeText(text);
+            alert('Copied!');
+        }
+    </script>
+</body>
+</html>
