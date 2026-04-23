@@ -1,7 +1,9 @@
 # Fake News Headline Generator
 
-Flask web app to generate fake/satirical news headlines.
-Supports AI generation (OpenAI) and fallback templates.
+Live App: https://fake-news-generator-9soi.onrender.com/
+
+A Flask-based web application that generates satirical/fake news headlines.
+It supports AI-generated content using OpenAI and also works with built-in templates if the API is not available.
 
 ---
 
@@ -9,11 +11,11 @@ Supports AI generation (OpenAI) and fallback templates.
 
 * User signup and login
 * Generate headlines by category
-* Select tone and number of headlines
-* Save headlines to database
-* Mark/unmark favorites
+* Choose tone and number of headlines
+* Save generated headlines
+* Mark and manage favorites
 * View trending headlines
-* Works without API (fallback mode)
+* Works with or without OpenAI API
 
 ---
 
@@ -28,7 +30,7 @@ Supports AI generation (OpenAI) and fallback templates.
 
 ## Project Structure
 
-```id="8n4w0m"
+```
 .
 ├── fake_headline_generator.py
 ├── requirements.txt
@@ -49,37 +51,37 @@ Supports AI generation (OpenAI) and fallback templates.
 
 ---
 
-## Setup (Local)
+## Run Locally
 
-1. Clone repo
+1. Clone the repository
 
-```id="8sz0fv"
+```
 git clone <your-repo-link>
 cd project
 ```
 
 2. Install dependencies
 
-```id="l3euj7"
+```
 pip install -r requirements.txt
 ```
 
-3. Create `.env`
+3. Create `.env` file
 
-```id="nq8dcm"
+```
 OPENAI_API_KEY=your_api_key
 SECRET_KEY=your_secret
 ```
 
-4. Run
+4. Run the application
 
-```id="8c3ym9"
+```
 python fake_headline_generator.py
 ```
 
-5. Open
+5. Open in browser
 
-```id="z1ttsf"
+```
 http://localhost:5000
 ```
 
@@ -87,21 +89,21 @@ http://localhost:5000
 
 ## Deployment (Render)
 
-* Build command:
+* Build Command:
 
-```id="c9u6vn"
+```
 pip install -r requirements.txt
 ```
 
-* Start command:
+* Start Command:
 
-```id="6sv8yz"
+```
 gunicorn fake_headline_generator:app
 ```
 
 * Environment Variables:
 
-```id="h2u8dx"
+```
 OPENAI_API_KEY=your_key
 SECRET_KEY=your_secret
 ```
@@ -110,9 +112,9 @@ SECRET_KEY=your_secret
 
 ## Notes
 
-* If OpenAI API key is not set, fallback headlines are used
+* If the OpenAI API key is not provided, the app uses fallback templates
 * `users.db` is created automatically
-* SQLite data may reset after redeploy
+* SQLite data may reset after redeploy (not persistent storage)
 
 ---
 
